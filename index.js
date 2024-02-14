@@ -1,4 +1,4 @@
-import { darkThemeToggleElement, appElement } from "./scripts/elements";
+import { darkThemeToggleElement, appElement, inputElement, taskListElement, getDeleteIcons } from "./scripts/elements";
 
 darkThemeToggleElement.addEventListener("click", () => {
     appElement.classList.toggle("App--isDark");
@@ -10,29 +10,11 @@ const taskSearchBarButton = document.querySelector(".TaskSearchBar__button");
 const fetchData = (key) => {
     const data = localStorage.getItem(key);
     return data ? JSON.parse(data) : false;
-}
+};
 
-const addTask = (e) => {
-    e.preventDefault();
-    const inputElement = document.querySelector(".TaskSearchBar__input");
-    const taskValue = inputElement.value;
-
-    if (!taskValue) return;
-
-    const task = {
-        value: taskValue,
-        isCompleted: false,
-    };
-
-    const tasks = fetchData("Tasks") || [];
-
-    tasks.push(task);
-
-    saveToDB("Tasks", tasks);
-
-    const taskListElement = document.querySelector(".TaskList__list");
-
+const renderTaskList = (tasks) => {
     let taskList = "";
+
     tasks.forEach(task => {
         taskList += `
         <li class="TaskList__taskContent ${task.isCompleted ? "TaskList__taskContent--isActive" : ""}">
@@ -48,12 +30,54 @@ const addTask = (e) => {
     });
 
     taskListElement.innerHTML = taskList;
+};
+
+const initTaskListeners = () => {
+    getDeleteIcons().forEach((icon, index) => {
+
+        icon.addEventListener("click", (e, index) => deleteTask(e, index));
+    });
+};
+
+const addTask = (e) => {
+    e.preventDefault();
+    
+    const taskValue = inputElement.value;
+
+    if (!taskValue) return;
+
+    const task = {
+        value: taskValue,
+        isCompleted: false,
+    };
+
+    const tasks = fetchData("Tasks") || [];
+
+    tasks.push(task);
+
+    saveToDB("Tasks", tasks);
+
+    renderTaskList(tasks);
+
     inputElement.value = "";
+    initTaskListeners();
 };
 
 
 const saveToDB = (key, data) => {
     localStorage.setItem(key, JSON.stringify(data));
+};
+
+const deleteTask = (e, index) => {
+    const answer = confirm("هل أنت متأكد من حذف المهمة؟");
+
+    if (answer === false) return;
+
+    const tasks = fetchData("Tasks");
+
+    tasks.splice(index, 1);
+    saveToDB("Tasks", tasks);
+    renderTaskList(tasks);
 };
 
 taskSearchBarButton.addEventListener("click", addTask);
@@ -65,7 +89,7 @@ taskSearchBarButton.addEventListener("click", addTask);
         [ ] saveToDB
         [ ] initDataOnStartup
         [ ] renderTaskList
-        [ ] addTask
+        [x] addTask
         [x] deleteTask
         [x] toggleTask
         [ ] toggleCompletedTask
