@@ -14,6 +14,8 @@ const addTask = (e) => {
 
     if (!taskValue) return;
 
+    saveToDB("Tasks", taskValue);
+
     const taskListElement = document.querySelector(".TaskList__list");
 
     taskListElement.innerHTML = `
@@ -29,11 +31,12 @@ const addTask = (e) => {
     `;
 };
 
+
+const saveToDB = (key, data) => {
+    localStorage.setItem(key, JSON.stringify(data));
+};
+
 taskSearchBarButton.addEventListener("click", addTask);
-
-
-
-
 
 /*
     - DarkTheme
