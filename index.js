@@ -35,6 +35,18 @@ const renderTaskList = (tasks) => {
     taskListElement.innerHTML = taskList;
 };
 
+const deleteTask = (e, index) => {
+    const answer = confirm("هل أنت متأكد من حذف المهمة؟");
+
+    if (answer === false) return;
+
+    const tasks = fetchData("Tasks");
+
+    tasks.splice(index, 1);
+    saveToDB("Tasks", tasks);
+    initTaskList(tasks);
+};
+
 const initTaskListeners = () => {
     getDeleteIcons().forEach((icon, index) => {
 
@@ -60,26 +72,13 @@ const addTask = (e) => {
 
     saveToDB("Tasks", tasks);
 
-    renderTaskList(tasks);
+    initTaskList(tasks);
 
     inputElement.value = "";
-    initTaskListeners();
 };
 
 const saveToDB = (key, data) => {
     localStorage.setItem(key, JSON.stringify(data));
-};
-
-const deleteTask = (e, index) => {
-    const answer = confirm("هل أنت متأكد من حذف المهمة؟");
-
-    if (answer === false) return;
-
-    const tasks = fetchData("Tasks");
-
-    tasks.splice(index, 1);
-    saveToDB("Tasks", tasks);
-    renderTaskList(tasks);
 };
 
 taskSearchBarButton.addEventListener("click", addTask);
@@ -88,6 +87,11 @@ const initDataOnStartup = () => {
     fetchData("darkModeFlag") && toggleDarkMode();
 };
 
+const initTaskList = (tasks) => {
+    renderTaskList(tasks);
+    initTaskListeners();
+}
+
 initDataOnStartup();
 
 
@@ -95,11 +99,13 @@ initDataOnStartup();
     - DarkTheme
         [x] toggleDarkMode
     - Tasks
-        [ ] saveToDB
-        [ ] initDataOnStartup
-        [ ] renderTaskList
+        [x] saveToDB
+        [x] initDataOnStartup
+        [x] initTaskList
         [x] addTask
         [x] deleteTask
         [x] toggleTask
+        [ ] toggleTask
         [ ] toggleCompletedTask
+        [ ] Empty State
 */
