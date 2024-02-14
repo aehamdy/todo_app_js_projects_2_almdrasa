@@ -1,8 +1,11 @@
 import { darkThemeToggleElement, appElement, inputElement, taskListElement, getDeleteIcons } from "./scripts/elements";
 
-darkThemeToggleElement.addEventListener("click", () => {
+const toggleDarkMode = () => {
     appElement.classList.toggle("App--isDark");
-});
+    saveToDB("darkModeFlag", appElement.classList.contains("App--isDark"));
+};
+
+darkThemeToggleElement.addEventListener("click", toggleDarkMode);
 
 
 const taskSearchBarButton = document.querySelector(".TaskSearchBar__button");
@@ -63,7 +66,6 @@ const addTask = (e) => {
     initTaskListeners();
 };
 
-
 const saveToDB = (key, data) => {
     localStorage.setItem(key, JSON.stringify(data));
 };
@@ -81,6 +83,13 @@ const deleteTask = (e, index) => {
 };
 
 taskSearchBarButton.addEventListener("click", addTask);
+
+const initDataOnStartup = () => {
+    fetchData("darkModeFlag") && toggleDarkMode();
+};
+
+initDataOnStartup();
+
 
 /*
     - DarkTheme
