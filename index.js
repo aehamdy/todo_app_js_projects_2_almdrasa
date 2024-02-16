@@ -1,4 +1,10 @@
-import { darkThemeToggleElement, appElement, inputElement, taskListElement, getDeleteIcons, getCheckboxElements } from "./scripts/elements";
+import { darkThemeToggleElement,
+    appElement,
+    inputElement,
+    taskListElement,
+    getDeleteIcons,
+    getCheckboxElements, 
+    taskListLink} from "./scripts/elements";
 
 const toggleDarkMode = () => {
     appElement.classList.toggle("App--isDark");
@@ -53,6 +59,7 @@ const initTaskListeners = () => {
     });
     getCheckboxElements().forEach((box, index) => {
         box.addEventListener("click", (e) => toggleTask(e, index));
+        box.addEventListener("keydown", (e) => e.key === "Enter" && toggleTask(e, index));
     })
 };
 
@@ -105,6 +112,11 @@ const initTaskList = (tasks) => {
     }
 };
 
+taskListLink.addEventListener("click", () => {
+    taskListElement.classList.toggle("TaskList__list--hideCompleted");
+    taskListLink.classList.toggle("TaskList__link--isActive");
+})
+
 const toggleTask = (e, index) => {
     const tasks = fetchData("Tasks");
 
@@ -126,7 +138,7 @@ initDataOnStartup();
         [x] addTask
         [x] deleteTask
         [x] toggleTask
-        [ ] toggleTask
-        [ ] toggleCompletedTask
+        [x] toggleTask
+        [x] toggleCompletedTask
         [ ] Empty State
 */
